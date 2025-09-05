@@ -76,7 +76,7 @@ export default function RichTextEditor({
     },
     editorProps: {
       attributes: {
-        class: 'prose prose-sm sm:prose lg:prose-lg xl:prose-2xl mx-auto focus:outline-none p-3',
+        class: 'prose prose-sm lg:prose mx-auto focus:outline-none p-1.5 lg:p-3 touch-manipulation text-sm lg:text-base',
       },
     },
   });
@@ -128,82 +128,95 @@ export default function RichTextEditor({
   const currentHeight = isExpanded ? "h-96" : height;
   
   return (
-    <div className={`rich-text-editor border border-gray-300 rounded-lg focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-transparent ${currentHeight}`}>
+    <div className={`rich-text-editor relative bg-white border border-gray-200 rounded-xl overflow-hidden spring-smooth transition-all focus-within:ring-2 focus-within:ring-blue-400/50 focus-within:border-blue-400 ${currentHeight}`}>
       {!hideToolbar && (
-        <div className="border-b border-gray-200 px-3 py-2 flex items-center justify-between bg-gray-50 rounded-t-lg">
-          <div className="flex items-center space-x-1">
+        <div className="editor-toolbar border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white">
+          <div className="flex items-center gap-1 overflow-x-auto">
             <button
               onClick={() => editor.chain().focus().toggleBold().run()}
-              className={`p-1.5 rounded hover:bg-gray-200 ${
-                editor.isActive('bold') ? 'bg-gray-300' : ''
+              className={`editor-toolbar button ${
+                editor.isActive('bold') ? 'active' : ''
               }`}
               type="button"
+              title="Bold"
             >
-              <Bold size={16} />
+              <Bold size={14} />
             </button>
             <button
               onClick={() => editor.chain().focus().toggleItalic().run()}
-              className={`p-1.5 rounded hover:bg-gray-200 ${
-                editor.isActive('italic') ? 'bg-gray-300' : ''
+              className={`editor-toolbar button ${
+                editor.isActive('italic') ? 'active' : ''
               }`}
               type="button"
+              title="Italic"
             >
-              <Italic size={16} />
+              <Italic size={14} />
             </button>
-            <div className="w-px h-6 bg-gray-300 mx-1" />
+            
+            <div className="w-px h-5 bg-gray-300 mx-1" />
+            
             <button
               onClick={() => editor.chain().focus().toggleBulletList().run()}
-              className={`p-1.5 rounded hover:bg-gray-200 ${
-                editor.isActive('bulletList') ? 'bg-gray-300' : ''
+              className={`editor-toolbar button ${
+                editor.isActive('bulletList') ? 'active' : ''
               }`}
               type="button"
+              title="Bullet List"
             >
-              <List size={16} />
+              <List size={14} />
             </button>
             <button
               onClick={() => editor.chain().focus().toggleOrderedList().run()}
-              className={`p-1.5 rounded hover:bg-gray-200 ${
-                editor.isActive('orderedList') ? 'bg-gray-300' : ''
+              className={`editor-toolbar button ${
+                editor.isActive('orderedList') ? 'active' : ''
               }`}
               type="button"
+              title="Numbered List"
             >
-              <ListOrdered size={16} />
+              <ListOrdered size={14} />
             </button>
-            <div className="w-px h-6 bg-gray-300 mx-1" />
+            
+            <div className="w-px h-5 bg-gray-300 mx-1" />
+            
             <button
               onClick={() => editor.chain().focus().undo().run()}
               disabled={!editor.can().undo()}
-              className="p-1.5 rounded hover:bg-gray-200 disabled:opacity-50"
+              className="editor-toolbar button disabled:opacity-40"
               type="button"
+              title="Undo"
             >
-              <Undo size={16} />
+              <Undo size={14} />
             </button>
             <button
               onClick={() => editor.chain().focus().redo().run()}
               disabled={!editor.can().redo()}
-              className="p-1.5 rounded hover:bg-gray-200 disabled:opacity-50"
+              className="editor-toolbar button disabled:opacity-40"
               type="button"
+              title="Redo"
             >
-              <Redo size={16} />
+              <Redo size={14} />
             </button>
-            <div className="w-px h-6 bg-gray-300 mx-1" />
+            
+            <div className="w-px h-5 bg-gray-300 mx-1" />
+            
             <div className="relative">
               <button
                 onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-                className="p-1.5 rounded hover:bg-gray-200"
+                className="editor-toolbar button"
                 type="button"
+                title="Add Emoji"
               >
-                <Smile size={16} />
+                <Smile size={14} />
               </button>
               
               {showEmojiPicker && (
-                <div className="absolute top-10 left-0 z-50 bg-white border border-gray-300 rounded-lg shadow-lg p-3 w-80 max-h-60 overflow-y-auto">
-                  <div className="grid grid-cols-10 gap-1">
+                <div className="absolute top-10 left-0 z-50 glass-surface border border-white/20 rounded-2xl shadow-2xl p-3 w-64 sm:w-72 max-h-48 overflow-y-auto">
+                  <div className="grid grid-cols-8 sm:grid-cols-9 gap-1">
                     {emojis.map((emoji, index) => (
                       <button
                         key={index}
                         onClick={() => insertEmoji(emoji)}
-                        className="p-1 hover:bg-gray-100 rounded text-lg"
+                        className="p-2 hover:bg-white/50 rounded-lg text-sm spring-smooth hover:scale-110 transition-all touch-manipulation"
                         type="button"
                       >
                         {emoji}
@@ -216,30 +229,32 @@ export default function RichTextEditor({
           </div>
           
           {expandable && (
-            <button
-              onClick={() => setIsExpanded(!isExpanded)}
-              className="p-1.5 rounded hover:bg-gray-200"
-              type="button"
-              title={isExpanded ? "Minimize" : "Expand"}
-            >
-              {isExpanded ? <Minimize2 size={16} /> : <Maximize2 size={16} />}
-            </button>
+            <div className="flex-shrink-0 ml-2">
+              <button
+                onClick={() => setIsExpanded(!isExpanded)}
+                className="editor-toolbar button"
+                type="button"
+                title={isExpanded ? "Minimize" : "Expand"}
+              >
+                {isExpanded ? <Minimize2 size={14} /> : <Maximize2 size={14} />}
+              </button>
+            </div>
           )}
         </div>
       )}
       
-      <div className="overflow-auto" style={{ height: hideToolbar ? '100%' : 'calc(100% - 45px)' }}>
+      <div className="relative overflow-auto" style={{ height: hideToolbar ? '100%' : 'calc(100% - 48px)' }}>
         <EditorContent 
           editor={editor} 
-          className="min-h-full p-3"
+          className="min-h-full"
         />
+        
+        {editor.isEmpty && (
+          <div className="absolute top-3 left-3 text-gray-400 pointer-events-none text-sm leading-relaxed">
+            {placeholder}
+          </div>
+        )}
       </div>
-      
-      {editor.isEmpty && (
-        <div className={`absolute ${hideToolbar ? 'top-3' : 'top-14'} left-3 text-gray-400 pointer-events-none`}>
-          {placeholder}
-        </div>
-      )}
     </div>
   );
 }
